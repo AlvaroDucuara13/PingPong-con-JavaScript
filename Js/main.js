@@ -1,8 +1,11 @@
 'use strict';
-
+//creación de los objetos: mesa, barras y pelota.
+//función anonima auto-ejecutable.
+//Esta función se creo con el fin de no contaminar el scope del proyecto.
 (function(){
-    
+
     self.Board = function(width, height){
+    //clase que declara la mesa del Ping Pong
         this.width = width;
         this.height = height;
         this.playing = false;
@@ -10,10 +13,8 @@
         this.bars = [];
         this.ball=null;
         this.playing=false;
-        
-
     }
-
+    
     self.Board.prototype = {
         get elements(){
             var elements = this.bars.map(function(bar){return bar;});
@@ -24,8 +25,10 @@
     }
 })();
 
+//función para la creación de la pelota de Ping Pong
 (function(){
     self.Ball = function(x,y,radius,board){
+        //Atributos de la pelota
         this.x=x;
         this.y=y;
         this.radius = radius;
@@ -42,17 +45,37 @@
         this.kind = "circle"
 
     }
+
     self.Ball.prototype={
             move : function(){
                 this.x += (this.speed_x * this.direction);
                 this.y += (this.speed_y);
+
+                //si la barra izquierda envia la pelota fuera de la mesa, el jugador#1 pierde.
+                if (this.x >= 800){
+                    this.speed_x = -this.speed_x;
+                    this.bounce_angle = -this.bounce_angle;
+                    board.playing = !board.playing;
+                    alert("el jugador #1 perdio")
+                }  
+                //si la barra derecha envia la pelota fuera de la mesa, el jugador#2 pierde.
+                if (this.x <= 20 ){
+                    this.speed_x = -this.speed_x;
+                    this.bounce_angle = -this.bounce_angle;
+                    board.playing = !board.playing;
+                    alert("el jugador #2 perdio")
+                }
+
             },
+
             get width(){
                 return this.radius*2;
             },
             get height(){
                 return this.radius*2;
             },
+
+            //Función de colisiones
             collisions: function(bar){
         
                 //reacciona a una colision con una barra que recibe como parametro
@@ -73,9 +96,8 @@
         }
 })();
 
-
+//función para la creación de las barras junto con atributos del canvas
 (function(){
-
     self.Bar = function(x, y, width, height, board){
         this.x = x;
         this.y = y;
@@ -84,7 +106,7 @@
         this.board = board;
         this.board.bars.push(this);
         this.kind = "rectangle";
-        this.speed = 50;
+        this.speed = 10;
     }
 
     self.Bar.prototype ={
@@ -103,7 +125,7 @@
 
 })();
 
-
+//función que dibuja la mesa del Ping Pong
 (function(){
     
     self.BoardView = function(canvas, board){
@@ -128,6 +150,7 @@
             };
         },
 
+        //revisión de las colisiones entre las barras y la pelota de Ping Pong
         check_collisions: function(){
             for (var i = this.board.bars.length - 1; i >= 0; i--){
                 var bar = this.board.bars[i];
@@ -148,6 +171,7 @@
         }
     }
 
+    //creación de las colisiones de la pelota contra las barras
     function hit(a,b){
         //Revisa si a coliciona con b
         var hit = false;
@@ -189,23 +213,29 @@
     }
 })();
 
+    //valores de entrada para la creación de la mesa Ping Pong
     var board = new Board(800, 400);
+    //valores de entrada para la creación de la barra 1 o izquierda
     var bar = new Bar (20,100,40,100,board);
+    ////valores de entrada para la creación de la barra 2 o derecha
     var bar_2 = new Bar (735,100,40,100,board);
+    //DOM
     var canvas = document.getElementById('canvas');
+    //Se carga los valores para la creación de la mesa de Ping Pong
     var board_view = new BoardView(canvas,board);
+    //Valores de entrada para la creación de la pelota de Ping Pong
     var ball = new Ball(350, 100, 10, board);
 
-    
-
-
+//se guarda los datos de entrada del movimiento de las barras
+//teclas: flecha arriba(up), flecha abajo(down), w(up), s(down) y espacio
 document.addEventListener("keydown", function(ev){
     
-
+    //flecha arriba
     if(ev.keyCode == 38){
         ev.preventDefault();
         bar.up();
     }
+    //flecha abajo
     else if(ev.keyCode == 40){
         ev.preventDefault();
         bar.down();
@@ -220,6 +250,7 @@ document.addEventListener("keydown", function(ev){
         ev.preventDefault();
         bar_2.down();
     }
+    //tecla espaciadora que pausa el juego o lo incia 
     else if(ev.keyCode == 32){
         ev.preventDefault();
         board.playing = !board.playing;
@@ -231,8 +262,10 @@ document.addEventListener("keydown", function(ev){
 
 board_view.draw();
 
+//Actualizacion del main
 window.requestAnimationFrame(main);
 
+//funcion que inicia el juego
 function main(){
     board_view.play();
     window.requestAnimationFrame(main);
