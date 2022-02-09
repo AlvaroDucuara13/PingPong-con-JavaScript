@@ -8,10 +8,30 @@
     <style>
         canvas{border:solid; }
     </style>
+
 </head>
+
 <body>
-    <h1>ping Pong por Alvaro Ducuara</h1>
-    <canvas id="canvas"></canvas>
+
+    <div class="navegar"> 
+
+        <div class="Inicio">
+            <h1>ping Pong en Java Script por Alvaro Ducuara</h1>
+            <h2>Debes presionar la tecla espacio para iniciar el juego</h2>
+            <button type="button" class="boton" onclick="location.reload() ">Presiona aquí para jugar de nuevo</button>
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <div class="Información">
+            <p>Como jugar al Ping Pong: <br><br>
+                - La barra izquierda es del jugador #1.
+                - La barra derecha es del jugador #2.
+                - Aquel jugador quien envie la pelota fuera de la mesa, pierde.
+            </p>
+        </div>
+
+    </div> 
+    
     <script type="module" src="/Js/main.js"></script>
 </body>
 </html>
