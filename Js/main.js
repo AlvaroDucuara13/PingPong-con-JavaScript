@@ -268,5 +268,5 @@ window.requestAnimationFrame(main);
 //funcion que inicia el juego
 function main(){
     board_view.play();
-    window.requestAnimationFrame(main);
+    window.requestAnimationFrame(main); 
 }
